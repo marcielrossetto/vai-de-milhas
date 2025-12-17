@@ -1,39 +1,38 @@
-// tests/unit/services/miles-calculator-service.test.ts
-
 import { calculateMiles } from "../../../src/services/miles-calculator-service";
 import { calculateDistance } from "../../../src/services/distances-calculator-service";
-import { ServiceClass, AffiliateStatus } from "../../../src/protocols"; 
+import { ServiceClass, AffiliateStatus } from "../../../src/protocols";
 
 jest.mock("../../../src/services/distances-calculator-service");
 
-const calculateDistanceMock = calculateDistance as jest.MockedFunction<typeof calculateDistance>;
+const calculateDistanceMock =
+  calculateDistance as jest.MockedFunction<typeof calculateDistance>;
 
 describe("MilesCalculatorService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should calculate miles applying bonuses", () => {
+  it("should calculate miles applying service, affiliate and birthday bonuses", () => {
     calculateDistanceMock.mockReturnValue(1000);
 
-    const miles = calculateMiles({
-      code: "TEST-CODE-123", // <--- ADICIONADO AQUI
+    const result = calculateMiles({
+      code: "TEST-CODE-123",
       origin: { lat: 0, long: 0 },
       destination: { lat: 1, long: 1 },
       miles: false,
       plane: "A320",
       service: ServiceClass.EXECUTIVE,
       affiliate: AffiliateStatus.GOLD,
-      date: "2025-05-10",
+      date: "2025-05-10", // Maio → bônus de aniversário
     });
 
-    expect(miles).toBeGreaterThan(1000);
+    expect(result).toBeGreaterThan(1000);
     expect(calculateDistanceMock).toHaveBeenCalledTimes(1);
   });
 
   it("should return 0 when trip is paid with miles", () => {
-    const miles = calculateMiles({
-      code: "TEST-CODE-456", // <--- ADICIONADO AQUI
+    const result = calculateMiles({
+      code: "TEST-CODE-456",
       origin: { lat: 0, long: 0 },
       destination: { lat: 1, long: 1 },
       miles: true,
@@ -43,6 +42,7 @@ describe("MilesCalculatorService", () => {
       date: "2025-06-10",
     });
 
-    expect(miles).toBe(0);
+    expect(result).toBe(0);
+    expect(calculateDistanceMock).not.toHaveBeenCalled();
   });
 });

@@ -6,4 +6,5 @@ module.exports = {
     ".+\\.ts$": "ts-jest",
   },
   testMatch: ["<rootDir>/tests/**/*.test.ts"],
+collectCoverageFrom: ["<rootDir>/src/services/**/*.ts"],
 };
