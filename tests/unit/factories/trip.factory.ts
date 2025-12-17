@@ -1,6 +1,8 @@
 import { faker } from "@faker-js/faker";
+// CORREÇÃO: Adicione mais um "../" para subir 3 níveis
+import { Trip, ServiceClass, AffiliateStatus } from "../../../src/protocols";
 
-export function tripFactory(overrides: Partial<any> = {}) {
+export function tripFactory(overrides: Partial<Trip> = {}): Trip {
   return {
     code: faker.string.alphanumeric(6),
     origin: {
@@ -13,8 +15,8 @@ export function tripFactory(overrides: Partial<any> = {}) {
     },
     miles: false,
     plane: "A320",
-    service: "ECONOMIC",
-    affiliate: "BRONZE",
+    service: ServiceClass.ECONOMIC,
+    affiliate: AffiliateStatus.BRONZE,
     date: "2025-06-10",
     ...overrides,
   };

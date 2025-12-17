@@ -1,24 +1,25 @@
-// src/services/distances-calculator-service.ts
+import { calculateDistance } from "../../../src/services/distances-calculator-service";
 
-export function calculateDistance(point1: { lat: number, long: number }, point2: { lat: number, long: number }): number {
-  // Implementação básica para passar no teste (Fórmula de Haversine simplificada ou mockada)
-  // O teste espera que calcule a distância e arredonde.
-  
-  const R = 6371; // Raio da terra em km
-  const dLat = deg2rad(point2.lat - point1.lat);
-  const dLong = deg2rad(point2.long - point1.long);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(point1.lat)) *
-      Math.cos(deg2rad(point2.lat)) *
-      Math.sin(dLong / 2) *
-      Math.sin(dLong / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distância em km
+describe("Distances Calculator Service", () => {
+  it("should calculate distance between two points correctly", () => {
+    // Exemplo: Distância aproximada entre São Paulo e Rio de Janeiro
+    // SP: -23.5505, -46.6333
+    // RJ: -22.9068, -43.1729
+    // A implementação usa Haversine, esperamos um valor positivo.
+    
+    const point1 = { lat: -23.5505, long: -46.6333 };
+    const point2 = { lat: -22.9068, long: -43.1729 };
 
-  return Math.round(distance);
-}
+    const distance = calculateDistance(point1, point2);
 
-function deg2rad(deg: number): number {
-  return deg * (Math.PI / 180);
-}
+    // Verifica se retornou um número e se não é zero (pois são pontos diferentes)
+    expect(typeof distance).toBe("number");
+    expect(distance).toBeGreaterThan(0);
+  });
+
+  it("should return 0 if points are the same", () => {
+    const point = { lat: 10, long: 10 };
+    const distance = calculateDistance(point, point);
+    expect(distance).toBe(0);
+  });
+});
